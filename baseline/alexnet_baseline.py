@@ -1,11 +1,14 @@
 import torch
 import torch.nn as nn
-from classfier import Classifier
 
 
-class AlexNet(Classifier):
+class AlexNetBaseline(nn.Module):
     def __init__(self, num_classes: int, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+        """
+        Args:
+            num_classes (int): số lượng lớp
+        """
+        super(AlexNetBaseline, self).__init__(*args, **kwargs)
 
         # 1 device
         self.conv_layers = [
@@ -73,15 +76,21 @@ class AlexNet(Classifier):
         )
 
     def forward(self, X: torch.Tensor) -> torch.Tensor:
-        # input dimensions: m(batch size) x 3 x 224 x 224
+        """
+        Args:
+            X (torch.Tensor): m(kích thước batch) x 3 x 224 x 224
+
+        Returns:
+            torch.Tensor: softmax output (m x num_classes)
+        """
         return self.network(X)
 
 
+
+
 if __name__ == "__main__":
-    # test
-    input = nn.Parameter(torch.rand(2, 3, 224, 224))
-    model = AlexNet(10)
+    input = torch.rand(2, 3, 224, 224)
+    model = AlexNetBaseline(5)
     output: torch.Tensor = model(input)
     output.sum().backward()
-    print(model(input))
-    print(model.predict(input))
+    print(model(input).shape)
