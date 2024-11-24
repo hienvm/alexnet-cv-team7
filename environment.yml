@@ -1,0 +1,11 @@
+name: alexnet-web
+channels:
+  - defaults
+  - pytorch
+  - anaconda
+  - conda-forge
+dependencies:
+  - pytorch
+  - torchvision
+  - flask
+  - cpuonly
