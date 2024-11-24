@@ -8,6 +8,7 @@ from numpy import random
 
 def indices_split(size: int, ratio: float):
     '''randomly splits into {ratio*size, (1-ratio)*size}'''
+    random.seed(0)
     indices: list[int] = random.choice(
         size, int(ratio*size), replace=False).tolist()
     return indices, list(set(range(size)).difference(set(indices)))

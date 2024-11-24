@@ -1,26 +1,54 @@
 import torch
-from torchvision import tv_tensors
 from torchvision.transforms import v2
-from sklearn.datasets import load_sample_image
-import numpy as np
+from torchvision import datasets
 from itertools import chain
+from baseline.pca import PCAColorAugmentation, pca
 
-preprocess = v2.Compose([
+# used to calculate mean and get final preprocess
+prepreprocess = v2.Compose([
     v2.Resize(256),
     v2.CenterCrop(256),
     v2.ToImage(),
-    # scale to [0, 1)
-    v2.ToDtype(torch.float32, scale=True),
-    # ImageNet Mean & StdDeviation
-    v2.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]),
+    v2.ToDtype(torch.float32),
 ])
 
-# training data augmentation
-train_augment = v2.Compose([
-    v2.RandomCrop(224),
-    v2.RandomHorizontalFlip(),
-    # TODO: PCA color augmentation
-])
+
+def calc_mean(
+    dataset: datasets.VisionDataset,
+    device=torch.device("cuda" if torch.cuda.is_available() else "cpu")
+):
+    with torch.no_grad():
+        mean = torch.zeros(3, device=device)
+        loader = torch.utils.data.DataLoader(
+            dataset, batch_size=1024, num_workers=3)
+        for images, _ in loader:
+            images = images.to(device)
+            mean += images.flatten(start_dim=2).mean(dim=2).sum(dim=0)
+        return mean.div_(len(dataset)).tolist()
+
+
+def get_preprocess(dataset: datasets.VisionDataset):
+    mean = calc_mean(dataset)
+    print(f'Mean: {mean}')
+    return v2.Compose([
+        v2.Resize(256),
+        v2.CenterCrop(256),
+        v2.ToImage(),
+        v2.ToDtype(torch.float32),
+        # Only subtracts mean
+        v2.Normalize(mean, (1, 1, 1)),
+    ])
+
+
+def get_train_augment(dataset: datasets.VisionDataset):
+    # training data augmentation
+    eigvals, eigvecs = pca(dataset)
+    return v2.Compose([
+        prepreprocess,
+        v2.RandomCrop(224),
+        v2.RandomHorizontalFlip(0.5),
+        PCAColorAugmentation(eigvals, eigvecs),
+    ])
 
 
 def crop(X: torch.Tensor, heightOffset: int, widthOffset: int):
@@ -41,13 +69,19 @@ def crop5(X: torch.Tensor):
 
 
 def crop10(X: torch.Tensor):
+    """Use generator to save space.
+
+    Yields:
+        10 crops for each image in batch
+    """
     return chain(crop5(X), crop5(X.fliplr()))
 
 
-if __name__ == '__main__':
-    img = tv_tensors.Image(np.permute_dims(
-        load_sample_image('flower.jpg').copy(), (2, 0, 1)), dtype=torch.uint8).unsqueeze(0)
-    a = crop10(preprocess(img))
-    print(next(a).shape)
-    for i, x in enumerate(a):
-        print(f'{i}.')
+# if __name__ == '__main__':
+    # print(calc_mean(datasets.CIFAR10(
+    #     'datasets/cifar10', train=True, transform=lambda X: train_augment(prepreprocess(X)))))
+
+    # a = train_augment(prepreprocess(img))
+    # print(a.shape)
+    #     for i, x in enumerate(a):
+    #         print(f'{i}.')
