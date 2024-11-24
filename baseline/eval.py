@@ -1,5 +1,6 @@
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 import torchvision.datasets as datasets
 from baseline.data_transforms import crop10
 
@@ -14,17 +15,17 @@ def predict(model: nn.Module, X: torch.Tensor) -> torch.Tensor:
     model.eval()
     with torch.no_grad():
         X = crop10(X)
-        res: torch.Tensor = model(next(X))
+        res: torch.Tensor = F.softmax(model(next(X)), dim=1)
         for crop in X:
-            res += model(crop)
+            res += F.softmax(model(crop), dim=1)
         return res/10
 
 
 def accuracy(model: nn.Module, dataset: datasets.VisionDataset,
              device=torch.device("cuda" if torch.cuda.is_available() else "cpu")):
-    cv_loader = torch.utils.data.DataLoader(dataset, 512, num_workers=3)
+    loader = torch.utils.data.DataLoader(dataset, 512, num_workers=3)
     trues = 0
-    for images, labels in cv_loader:
+    for images, labels in loader:
         images = images.to(device)
         labels = labels.to(device)
         predicted_labels = predict(model, images).argmax(1)
@@ -34,12 +35,12 @@ def accuracy(model: nn.Module, dataset: datasets.VisionDataset,
 
 def topk(model: nn.Module, dataset: datasets.VisionDataset, k=1,
          device=torch.device("cuda" if torch.cuda.is_available() else "cpu")):
-    cv_loader = torch.utils.data.DataLoader(dataset, 512, num_workers=3)
+    loader = torch.utils.data.DataLoader(dataset, 512, num_workers=3)
     trues = 0
-    for images, labels in cv_loader:
+    for images, labels in loader:
         images = images.to(device)
         labels = labels.to(device)
-        predicted_labels, _ = predict(model, images).topk(1)
-        trues += predicted_labels.eq_(
+        _, predicted_labels = predict(model, images).topk(k)
+        trues += predicted_labels.where().eq_(
             labels.reshape(-1, 1)).count_nonzero().item()
     return float(trues) / len(dataset)

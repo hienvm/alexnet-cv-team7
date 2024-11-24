@@ -27,7 +27,7 @@ def calc_mean(
         return mean.div_(len(dataset)).tolist()
 
 
-def get_preprocess(dataset: datasets.VisionDataset):
+def get_preprocess(dataset: datasets.VisionDataset, mean, std):
     mean = calc_mean(dataset)
     print(f'Mean: {mean}')
     return v2.Compose([
@@ -74,7 +74,7 @@ def crop10(X: torch.Tensor):
     Yields:
         10 crops for each image in batch
     """
-    return chain(crop5(X), crop5(v2.functional.hflip(X)))
+    return chain(crop5(X), crop5(X.fliplr()))
 
 
 # if __name__ == '__main__':

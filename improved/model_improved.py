@@ -7,10 +7,10 @@ def init_params(layer: nn.Module):
     if not isinstance(layer, nn.Conv2d) and not isinstance(layer, nn.Linear):
         return
     if not isinstance(layer, nn.Conv2d) or layer.in_channels not in (3, 256):
-        # set all biases to 1 except in 1st and 3rd conv layer
-        torch.nn.init.ones_(layer.bias)
-    # set all weights to ~ N(0, 0.01)
-    torch.nn.init.normal_(layer.weight, 0, 0.01)
+    # set all biases to small constants
+        torch.nn.init.constant_(layer.bias, 0.01)
+    # he initialization, scale to variance of 2/n
+    torch.nn.init.kaiming_normal_(layer.weight)
 
 
 class AlexNetImproved(nn.Module):
@@ -33,34 +33,37 @@ class AlexNetImproved(nn.Module):
                 # conv_layer 1
                 nn.Conv2d(in_channels=3, out_channels=96,
                           kernel_size=11, stride=4, padding=2, device=device),
+                nn.BatchNorm2d(96),
                 nn.ReLU(inplace=True),
-                nn.LocalResponseNorm(k=2, size=5, alpha=1e-4, beta=0.75),
                 nn.MaxPool2d(kernel_size=3, stride=2),
             ),
             nn.Sequential(
                 # conv_layer 2
                 nn.Conv2d(in_channels=96, out_channels=256,
                           kernel_size=5, stride=1, padding=2, device=device),
+                nn.BatchNorm2d(256),
                 nn.ReLU(inplace=True),
-                nn.LocalResponseNorm(k=2, size=5, alpha=1e-4, beta=0.75),
                 nn.MaxPool2d(kernel_size=3, stride=2),
             ),
             nn.Sequential(
                 # conv_layer 3
                 nn.Conv2d(in_channels=256, out_channels=384,
                           kernel_size=3, stride=1, padding=1, device=device),
+                nn.BatchNorm2d(384),
                 nn.ReLU(inplace=True),
             ),
             nn.Sequential(
                 # conv_layer 4
                 nn.Conv2d(in_channels=384, out_channels=384,
                           kernel_size=3, stride=1, padding=1, device=device),
+                nn.BatchNorm2d(384),
                 nn.ReLU(inplace=True),
             ),
             nn.Sequential(
                 # conv_layer 5
                 nn.Conv2d(in_channels=384, out_channels=256,
                           kernel_size=3, stride=1, padding=1, device=device),
+                nn.BatchNorm2d(256),
                 nn.ReLU(inplace=True),
                 nn.MaxPool2d(kernel_size=3, stride=2),
             ),
@@ -77,6 +80,7 @@ class AlexNetImproved(nn.Module):
                 # fc_layer 2
                 nn.Dropout(0.5),
                 nn.Linear(in_features=4096, out_features=4096, device=device),
+                nn.BatchNorm1d(4096),
                 nn.ReLU(inplace=True),
             ),
             # nn.Sequential(

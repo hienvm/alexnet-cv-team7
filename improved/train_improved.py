@@ -12,7 +12,7 @@ def train(model: nn.Module,
           num_epochs=90,
           class_weights: torch.Tensor | None = None,
           num_workers=2,
-          initial_lr=0.01,
+          initial_lr=0.001,
           device=torch.device("cuda" if torch.cuda.is_available() else "cpu"),
           ):
     train_start_time = time()
@@ -20,8 +20,8 @@ def train(model: nn.Module,
     cv_error_rates = []
     learning_rates = []
 
-    optimizer = torch.optim.SGD(
-        model.parameters(), lr=initial_lr, momentum=0.9, weight_decay=5e-4)
+    optimizer = torch.optim.Adam(
+        model.parameters(), lr=initial_lr, weight_decay=5e-4)
     # reduce lr 10 times whenever validation error doesn't reduce after num_epochs/10 epochs
     lr_scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
         optimizer, factor=0.1, patience=num_epochs/10, min_lr=1e-6)
@@ -63,7 +63,7 @@ def train(model: nn.Module,
         lr_scheduler.step(error_rate)
         learning_rates.append(lr_scheduler.get_last_lr()[0])
         
-        print(f'Epoch {i+1}/{num_epochs}, Cost: {avg_cost:.7f}, CV_Error: {error_rate:.2%}, lr: {lr_scheduler.get_last_lr()[0]}, Time: {time()-epoch_start_time:.0f}s')
+        print(f'Epoch {i+1}/{num_epochs}, Cost: {avg_cost:.3f}, CV_Error: {error_rate:.2%}, lr: {lr_scheduler.get_last_lr()[0]}, Time: {time()-epoch_start_time}')
 
     # last epoch
     # with torch.no_grad():
