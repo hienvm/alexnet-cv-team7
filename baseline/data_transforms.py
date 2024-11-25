@@ -40,11 +40,11 @@ def get_preprocess(dataset: datasets.VisionDataset):
     ])
 
 
-def get_train_augment(dataset: datasets.VisionDataset):
+def get_train_augment(dataset: datasets.VisionDataset, preprocess):
     # training data augmentation
     eigvals, eigvecs = pca(dataset)
     return v2.Compose([
-        prepreprocess,
+        preprocess,
         v2.RandomCrop(224),
         v2.RandomHorizontalFlip(0.5),
         PCAColorAugmentation(eigvals, eigvecs),

@@ -4,7 +4,6 @@ from baseline.eval import predict
 from flask import Flask, request, render_template, jsonify
 from baseline.data_transforms import prepreprocess
 import torchvision
-import torch
 
 app = Flask('Medical Diagnosis')
 

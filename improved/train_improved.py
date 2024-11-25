@@ -14,6 +14,7 @@ def train(model: nn.Module,
           num_workers=2,
           initial_lr=0.001,
           device=torch.device("cuda" if torch.cuda.is_available() else "cpu"),
+          patience=10,
           ):
     train_start_time = time()
     epoch_costs = []
@@ -22,9 +23,9 @@ def train(model: nn.Module,
 
     optimizer = torch.optim.Adam(
         model.parameters(), lr=initial_lr, weight_decay=5e-4)
-    # reduce lr 10 times whenever validation error doesn't reduce after num_epochs/10 epochs
+    # reduce lr 10 times whenever validation error doesn't reduce after patience epochs
     lr_scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
-        optimizer, factor=0.1, patience=num_epochs/10, min_lr=1e-6)
+        optimizer, factor=0.1, patience=patience)
     cross_entropy = nn.CrossEntropyLoss(weight=class_weights)
 
     train_loader = torch.utils.data.DataLoader(
