@@ -29,7 +29,7 @@ def calc_mean(
 
 def get_preprocess(dataset: datasets.VisionDataset):
     mean = calc_mean(dataset)
-    print(f'Mean: {mean}')
+    print(f'Mean:\n{mean}')
     return v2.Compose([
         v2.Resize(256),
         v2.CenterCrop(256),

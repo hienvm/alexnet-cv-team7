@@ -2,7 +2,7 @@ import torch
 from torchvision.transforms import v2
 from torchvision import datasets
 from itertools import chain
-from baseline.pca import PCAColorAugmentation, pca
+from improved.pca import PCAColorAugmentation, pca
 
 # used to calculate mean and get final preprocess
 prepreprocess = v2.Compose([
@@ -41,12 +41,11 @@ def get_preprocess(mean, std):
         v2.CenterCrop(256),
         v2.ToImage(),
         v2.ToDtype(torch.float32, scale=True),
-        # Only subtracts mean
         v2.Normalize(mean, std),
     ])
 
 
-def get_train_augment(eigvals, eigvecs):
+def get_train_augment(eigvals, eigvecs, mean, std):
     # training data augmentation
     return v2.Compose([
         v2.Resize(256),
@@ -55,9 +54,11 @@ def get_train_augment(eigvals, eigvecs):
         v2.RandomCrop(224),
         v2.RandomHorizontalFlip(0.5),
         v2.TrivialAugmentWide(),
-        
+        v2.ToDtype(torch.float32, scale=True),
+        v2.Normalize(mean, std),
         PCAColorAugmentation(eigvals, eigvecs),
     ])
+
 
 
 def crop(X: torch.Tensor, heightOffset: int, widthOffset: int):
@@ -83,14 +84,4 @@ def crop10(X: torch.Tensor):
     Yields:
         10 crops for each image in batch
     """
-    return chain(crop5(X), crop5(X.fliplr()))
-
-
-# if __name__ == '__main__':
-    # print(calc_mean(datasets.CIFAR10(
-    #     'datasets/cifar10', train=True, transform=lambda X: train_augment(prepreprocess(X)))))
-
-    # a = train_augment(prepreprocess(img))
-    # print(a.shape)
-    #     for i, x in enumerate(a):
-    #         print(f'{i}.')
+    return chain(crop5(X), crop5(v2.functional.hflip(X)))

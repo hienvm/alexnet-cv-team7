@@ -1,8 +1,8 @@
 # Import necessary modules from Flask and Keras libraries
-from improved.model_improved import AlexNetImproved
-from baseline.eval import predict
+from improved.model import AlexNetImproved
+from improved.eval import predict
 from flask import Flask, request, render_template, jsonify
-from baseline.data_transforms import prepreprocess
+from improved.data_transforms import prepreprocess
 import torchvision
 
 app = Flask('Medical Diagnosis')

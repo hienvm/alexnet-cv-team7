@@ -1,7 +1,9 @@
 import torch
 import torch.nn as nn
+import torch.utils
+import torch.utils.data
 import torchvision.datasets as datasets
-from baseline.eval import accuracy
+from improved.eval import accuracy
 # from tqdm.notebook import trange
 from time import time
 
