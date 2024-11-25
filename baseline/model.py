@@ -13,7 +13,7 @@ def init_params(layer: nn.Module):
     torch.nn.init.normal_(layer.weight, 0, 0.01)
 
 
-class AlexNetImproved(nn.Module):
+class AlexNetBaseline(nn.Module):
     def __init__(
         self,
         num_classes: int,
@@ -25,7 +25,7 @@ class AlexNetImproved(nn.Module):
         Args:
             num_classes (int): số lượng lớp
         """
-        super(AlexNetImproved, self).__init__(*args, **kwargs)
+        super(AlexNetBaseline, self).__init__(*args, **kwargs)
 
         # 1 device
         self.conv_layers = [
@@ -105,7 +105,7 @@ class AlexNetImproved(nn.Module):
 
 if __name__ == "__main__":
     input = torch.rand(2, 3, 224, 224)
-    model = AlexNetImproved(5)
+    model = AlexNetBaseline(5)
     output: torch.Tensor = model(input)
     output.sum().backward()
     print(model(input).shape)
