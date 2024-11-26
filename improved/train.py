@@ -6,6 +6,7 @@ import torchvision.datasets as datasets
 from improved.eval import accuracy
 # from tqdm.notebook import trange
 from time import time
+from typing import Literal
 
 def train(model: nn.Module,
           train_dataset: datasets.VisionDataset,
@@ -17,16 +18,19 @@ def train(model: nn.Module,
           initial_lr=0.001,
           device=torch.device("cuda" if torch.cuda.is_available() else "cpu"),
           patience=10,
+          optimizer: Literal['adam'] | Literal['sgd']='sgd'
           ):
     train_start_time = time()
     epoch_costs = []
     cv_error_rates = []
     learning_rates = []
 
-    # optimizer = torch.optim.Adam(
-    #     model.parameters(), lr=initial_lr, weight_decay=5e-4)
-    optimizer = torch.optim.SGD(
-        model.parameters(), lr=initial_lr, momentum=0.9, weight_decay=5e-4)
+    if optimizer == 'adam':
+        optimizer = torch.optim.Adam(
+            model.parameters(), lr=initial_lr, weight_decay=5e-4)
+    else:
+        optimizer = torch.optim.SGD(
+            model.parameters(), lr=initial_lr, momentum=0.9, weight_decay=5e-4)
     # reduce lr 10 times whenever validation error doesn't reduce after patience epochs
     lr_scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
         optimizer, factor=0.1, patience=patience)
