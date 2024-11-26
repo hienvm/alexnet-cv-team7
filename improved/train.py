@@ -23,8 +23,10 @@ def train(model: nn.Module,
     cv_error_rates = []
     learning_rates = []
 
-    optimizer = torch.optim.Adam(
-        model.parameters(), lr=initial_lr, weight_decay=5e-4)
+    # optimizer = torch.optim.Adam(
+    #     model.parameters(), lr=initial_lr, weight_decay=5e-4)
+    optimizer = torch.optim.SGD(
+        model.parameters(), lr=initial_lr, momentum=0.9, weight_decay=5e-4)
     # reduce lr 10 times whenever validation error doesn't reduce after patience epochs
     lr_scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
         optimizer, factor=0.1, patience=patience)
