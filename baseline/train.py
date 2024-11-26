@@ -64,7 +64,7 @@ def train(model: nn.Module,
         lr_scheduler.step(error_rate)
         learning_rates.append(lr_scheduler.get_last_lr()[0])
         
-        print(f'Epoch {i+1}/{num_epochs}, Cost: {avg_cost:.7f}, CV_Error: {error_rate:.2%}, lr: {lr_scheduler.get_last_lr()[0]}, Time: {time()-epoch_start_time:.0f}s')
+        print(f'Epoch {i+1}/{num_epochs}, Cost: {avg_cost:.7f}, Val Error: {error_rate:.2%}, lr: {lr_scheduler.get_last_lr()[0]}, Time: {time()-epoch_start_time:.0f}s')
 
     # last epoch
     # with torch.no_grad():
@@ -76,6 +76,6 @@ def train(model: nn.Module,
     #         cost_sum += cost.item()
     #     epoch_costs.append(cost_sum / len(train_loader))
         
-    print(f'Training time: {time()-train_start_time}')
+    print(f'Training time: {(time()-train_start_time)/60:.0f}m')
 
     return epoch_costs, cv_error_rates, learning_rates
