@@ -9,7 +9,7 @@ def init_params(layer: nn.Module):
     # set biases to 0
     torch.nn.init.zeros_(layer.bias)
     # kaimming initialization, scale to variance of 2/n
-    torch.nn.init.kaiming_normal_(layer.weight)
+    torch.nn.init.kaiming_normal_(layer.weight, 0.25)
     
 
 class AlexNetImproved(nn.Module):
