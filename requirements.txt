@@ -1,4 +1,4 @@
 # webapp
-pytorch
+torch
 torchvision
 flask
