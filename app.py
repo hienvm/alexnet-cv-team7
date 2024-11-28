@@ -2,15 +2,16 @@
 from improved.model import AlexNetImproved
 from improved.eval import predict
 from flask import Flask, request, render_template, jsonify
-from improved.data_transforms import prepreprocess
 import torchvision
+import torch
 
 app = Flask('Medical Diagnosis')
 
 classes = ['classA', 'classB', 'healthy']
 
-model = AlexNetImproved(num_classes=len(classes))
-# model.load_state_dict(torch.load('models/'))
+model = AlexNetImproved(num_classes=10)
+model.load_state_dict(torch.load('models/skin.model.pt', map_location=torch.device('cpu')))
+preprocess = torch.load('models/skin.preprocess.pt', map_location=torch.device('cpu'))
 
 # home page
 @app.route("/", methods=["GET"])
@@ -44,7 +45,7 @@ def diagnose():
     # Probabilities
     prediction = predict(
         model, 
-        prepreprocess(img)
+        preprocess(img)
     ).flatten()
 
     # Most probable class
