@@ -14,7 +14,10 @@
 
   <div class="container">
     <form class="p-3 text-center" action='/' , method="post" enctype="multipart/form-data">
-      <input class="form-control" type="file" name="img">
+      <label for="img_upload">
+        <h3>Upload images of the symtoms from different angles:</h3>
+      </label>
+      <input class="form-control" type="file" name="images[]" id="img_upload" multiple>
       <input class="btn btn-primary mt-3" type="submit" value="Predict Image">
     </form>
   </div>

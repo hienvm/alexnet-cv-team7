@@ -29,7 +29,7 @@ model = AlexNetImproved(num_classes=len(classes))
 model.load_state_dict(
     torch.load("models/skin.model.pt", map_location=torch.device("cpu"))
 )
-preprocess = torch.load("models/skin.model.pt", map_location=torch.device("cpu"))
+preprocess = torch.load("models/skin.preprocess.pt", map_location=torch.device("cpu"))
 
 
 # home page
@@ -53,18 +53,26 @@ def diagnose():
     }
     """
     # convert to PIL image
-    img_file = request.files["img"]
+    img_files = request.files.getlist("images[]")
 
     # img_url = "tmp/" + img_file.filename
 
-    img_url = "static/images/" + secure_filename(img_file.filename)
+    img_urls = []
+    
+    for file in img_files:
+        url = "static/images/" + secure_filename(file.filename)
+        img_urls.append(url)
+        file.save(url)
 
-    img_file.save(img_url)
-
-    img = torchvision.io.read_image(img_url).unsqueeze_(0)
-
-    # Probabilities
-    prediction = predict(model, prepreprocess(img)).flatten()
+    prediction = torch.zeros(len(classes))
+    img_batch = []
+    for url in img_urls:
+        # take only 3 RGB channels
+        img = torchvision.io.read_image(url)[:3]
+        img_batch.append(preprocess(img))
+    img_batch = torch.stack(img_batch, 0)
+    # take average
+    prediction += predict(model, img_batch).mean(0)
 
     # Most probable class
     label = classes[prediction.argmax()]
@@ -79,7 +87,7 @@ def diagnose():
     return render_template(
         "index.html",
         result={
-            "image_path": img_url,
+            "image_path": img_urls[0],
             "label": label,
             "class_probs": class_probs,
         },
