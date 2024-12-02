@@ -17,10 +17,30 @@
       <label for="img_upload">
         <h3>Upload images of the symtoms from different angles:</h3>
       </label>
-      <input class="form-control" type="file" name="images[]" id="img_upload" multiple>
+
+      <div class="row justify-content-center">
+        <div class="col-md-3">
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <label class="input-group-text" for="inputGroupSelect01">Options</label>
+            </div>
+            <select class="form-select" id="inputGroupSelect01">
+              <option selected>Choose...</option>
+              <option value="1">Skin Cancer</option>
+              <option value="2">Mouth</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <input class="form-control" type="file" name="images[]" id="img_upload" multiple>
+        </div>
+
+      </div>
       <input class="btn btn-primary mt-3" type="submit" value="Predict Image">
     </form>
   </div>
+
 
   {% if result %}
   <div class="container">
