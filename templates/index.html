@@ -25,10 +25,18 @@
   {% if result %}
   <div class="container">
     <div class="row">
-      <div class="col-sm">
-        <img src={{result['image_path']}} class="img-fluid text-center border" alt="Responsive image">
+      <div class="col">
+        <div class="row">
+
+          {% for image in result['image_path'] %}
+          <div class="col-6">
+            <img src={{image}} class="img-fluid text-center border" width=100% alt="Responsive image">
+          </div>
+          {% endfor %}
+
+        </div>
       </div>
-      <div class="col-sm">
+      <div class="col">
         <h4 class="text-center">
           You are
           {% if result['label'] == 'healthy' %} healthy {% else %} diagnosed with {{result['label']}} {% endif %}

@@ -58,7 +58,7 @@ def diagnose():
     # img_url = "tmp/" + img_file.filename
 
     img_urls = []
-    
+
     for file in img_files:
         url = "static/images/" + secure_filename(file.filename)
         img_urls.append(url)
@@ -87,7 +87,7 @@ def diagnose():
     return render_template(
         "index.html",
         result={
-            "image_path": img_urls[0],
+            "image_path": img_urls,
             "label": label,
             "class_probs": class_probs,
         },
