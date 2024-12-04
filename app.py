@@ -1,8 +1,9 @@
 # Import necessary modules from Flask and Keras libraries
-import torch
-import torchvision
 import os
 import uuid
+
+import torch
+import torchvision
 from flask import Flask, jsonify, render_template, request
 from werkzeug.utils import secure_filename
 
@@ -96,6 +97,12 @@ def diagnose():
     )
     # return jsonify({'label': label, 'probs': probs})
 
+
+@app.route("/add_samples", methods=["GET"])
+def contribute():
+    return render_template("contribute.html")
+
+
 # lưu các file ảnh ở 2 trường vào folder có đường dẫn /collected_samples/{tên_class}/{id}
 @app.route("/add_samples", methods=["POST"])
 def add_samples():
@@ -133,6 +140,7 @@ def add_samples():
             "id": unique_id,
         }
     )
+
 
 if __name__ == "__main__":
     app.run(host="127.0.0.1", port=5000, debug=True)
