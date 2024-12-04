@@ -10,7 +10,21 @@
 </head>
 
 <body>
-  <h1 class="p-3 text-center">Medical Diagnosis</h1>
+  <nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <div class="container-fluid">
+      <span class="navbar-brand mb-0 h1">Medical Diagnosis</span>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
+        aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+        <div class="navbar-nav">
+          <a class="nav-link active" aria-current="page" href="/">Home</a>
+          <a class="nav-link" href="/add_samples">Contribute</a>
+        </div>
+      </div>
+    </div>
+  </nav>
 
   <div class="container">
     <form class="p-3 text-center" action='/' , method="post" enctype="multipart/form-data">
@@ -80,36 +94,6 @@
     </div>
   </div>
   {% endif %}
-   <!-- New Form for Adding Samples -->
-   <div class="container mt-5">
-    <h3 class="text-center">Add New Samples to Dataset</h3>
-    <form action="/add_samples" method="post" enctype="multipart/form-data">
-      <div class="mb-3">
-        <label for="symptom_images" class="form-label">Upload Symptom Images (Multiple):</label>
-        <input type="file" class="form-control" id="symptom_images" name="symptom_images[]" multiple accept="image/*">
-      </div>
-      <div class="mb-3">
-        <label for="proof_images" class="form-label">Upload Proof Images (Multiple):</label>
-        <input type="file" class="form-control" id="proof_images" name="proof_images[]" multiple accept="image/*">
-      </div>
-      <div class="mb-3">
-        <label for="class" class="form-label">Select Diagnosis Class:</label>
-        <select class="form-select" id="class" name="class">
-          <option value="actinic keratosis">Actinic Keratosis</option>
-          <option value="basal cell carcinoma">Basal Cell Carcinoma</option>
-          <option value="dermatofibroma">Dermatofibroma</option>
-          <option value="healthy">Healthy</option>
-          <option value="melanoma">Melanoma</option>
-          <option value="nevus">Nevus</option>
-          <option value="pigmented benign keratosis">Pigmented Benign Keratosis</option>
-          <option value="seborrheic keratosis">Seborrheic Keratosis</option>
-          <option value="squamous cell carcinoma">Squamous Cell Carcinoma</option>
-          <option value="vascular lesion">Vascular Lesion</option>
-        </select>
-      </div>
-      <button type="submit" class="btn btn-success">Submit</button>
-    </form>
-  </div>
 </body>
 
 </html>

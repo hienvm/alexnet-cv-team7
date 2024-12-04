@@ -1,4 +1,5 @@
 # Custom
+collected_samples/
 static/images
 datasets/
 test.*
