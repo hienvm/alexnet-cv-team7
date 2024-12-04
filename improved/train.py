@@ -18,7 +18,8 @@ def train(model: nn.Module,
           initial_lr=0.001,
           device=torch.device("cuda" if torch.cuda.is_available() else "cpu"),
           patience=10,
-          optimizer: Literal['adam'] | Literal['sgd']='sgd'
+          optimizer: Literal['adam'] | Literal['sgd']='sgd',
+          output_type: Literal['softmax'] | Literal['sigmoid']='softmax',
           ):
     train_start_time = time()
     epoch_costs = []
@@ -34,7 +35,9 @@ def train(model: nn.Module,
     # reduce lr 10 times whenever validation error doesn't reduce after patience epochs
     lr_scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
         optimizer, factor=0.1, patience=patience)
-    cross_entropy = nn.CrossEntropyLoss(weight=class_weights)
+    
+    cost_func = nn.CrossEntropyLoss(weight=class_weights) if output_type=='softmax' \
+            else nn.BCEWithLogitsLoss(weight=class_weights)
 
     train_loader = torch.utils.data.DataLoader(
         train_dataset, batch_size, shuffle=True, num_workers=num_workers)
@@ -49,12 +52,20 @@ def train(model: nn.Module,
         model.train()
         cost_sum = 0.0
         for images, labels in train_loader:
-            images = images.to(device)
-            labels = labels.to(device)
+            images: torch.Tensor = images.to(device)
+            labels: torch.Tensor = labels.to(device)
+            
+            output: torch.Tensor = model(images)
+            
+            if output_type == 'sigmoid':
+                labels = torch.zeros(output.shape) \
+                    .scatter_(1, labels.reshape(labels.shape[0], 1), 1)
+                
+            cost: torch.Tensor = cost_func(output, labels)
 
-            cost: torch.Tensor = cross_entropy(model(images), labels)
             del images
             del labels
+            del output
             
             optimizer.zero_grad()
             cost.backward()

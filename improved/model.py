@@ -28,7 +28,7 @@ class AlexNetImproved(nn.Module):
         super(AlexNetImproved, self).__init__(*args, **kwargs)
 
         # 1 device
-        self.conv_layers = [
+        self.conv_layers: list[nn.Module] = [
             nn.Sequential(
                 # conv_layer 1
                 nn.Conv2d(in_channels=3, out_channels=96,
