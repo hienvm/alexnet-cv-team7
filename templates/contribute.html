@@ -31,11 +31,13 @@
     <form action="/add_samples" method="post" enctype="multipart/form-data">
       <div class="mb-3">
         <label for="symptom_images" class="form-label">Upload Symptom Images (Multiple):</label>
-        <input type="file" class="form-control" id="symptom_images" name="symptom_images[]" multiple accept="image/*">
+        <input type="file" class="form-control" id="symptom_images" name="symptom_images[]" multiple accept="image/*"
+          required>
       </div>
       <div class="mb-3">
         <label for="proof_images" class="form-label">Upload Proof Images (Multiple):</label>
-        <input type="file" class="form-control" id="proof_images" name="proof_images[]" multiple accept="image/*">
+        <input type="file" class="form-control" id="proof_images" name="proof_images[]" multiple accept="image/*"
+          required>
       </div>
       <div class="mb-3">
         <label for="class" class="form-label">Select Diagnosis Class:</label>
