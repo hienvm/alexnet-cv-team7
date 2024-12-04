@@ -17,18 +17,46 @@
       <label for="img_upload">
         <h3>Upload images of the symtoms from different angles:</h3>
       </label>
-      <input class="form-control" type="file" name="images[]" id="img_upload" multiple>
+
+      <div class="row justify-content-center">
+        <div class="col-md-3">
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <label class="input-group-text" for="inputGroupSelect01">Options</label>
+            </div>
+            <select class="form-select" id="inputGroupSelect01">
+              <option selected>Choose...</option>
+              <option value="1">Skin Cancer</option>
+              <option value="2">Mouth</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <input class="form-control" type="file" name="images[]" id="img_upload" multiple>
+        </div>
+
+      </div>
       <input class="btn btn-primary mt-3" type="submit" value="Predict Image">
     </form>
   </div>
 
+
   {% if result %}
   <div class="container">
     <div class="row">
-      <div class="col-sm">
-        <img src={{result['image_path']}} class="img-fluid text-center border" alt="Responsive image">
+      <div class="col">
+        <div class="row">
+
+          {% for image in result['image_path'] %}
+          <div class="col-6">
+            <img src={{image}} class="img-fluid text-center border" width=100% alt="Responsive image">
+          </div>
+          {% endfor %}
+
+        </div>
       </div>
-      <div class="col-sm">
+      <div class="col">
         <h4 class="text-center">
           You are
           {% if result['label'] == 'healthy' %} healthy {% else %} diagnosed with {{result['label']}} {% endif %}
@@ -52,6 +80,36 @@
     </div>
   </div>
   {% endif %}
+   <!-- New Form for Adding Samples -->
+   <div class="container mt-5">
+    <h3 class="text-center">Add New Samples to Dataset</h3>
+    <form action="/add_samples" method="post" enctype="multipart/form-data">
+      <div class="mb-3">
+        <label for="symptom_images" class="form-label">Upload Symptom Images (Multiple):</label>
+        <input type="file" class="form-control" id="symptom_images" name="symptom_images[]" multiple accept="image/*">
+      </div>
+      <div class="mb-3">
+        <label for="proof_images" class="form-label">Upload Proof Images (Multiple):</label>
+        <input type="file" class="form-control" id="proof_images" name="proof_images[]" multiple accept="image/*">
+      </div>
+      <div class="mb-3">
+        <label for="class" class="form-label">Select Diagnosis Class:</label>
+        <select class="form-select" id="class" name="class">
+          <option value="actinic keratosis">Actinic Keratosis</option>
+          <option value="basal cell carcinoma">Basal Cell Carcinoma</option>
+          <option value="dermatofibroma">Dermatofibroma</option>
+          <option value="healthy">Healthy</option>
+          <option value="melanoma">Melanoma</option>
+          <option value="nevus">Nevus</option>
+          <option value="pigmented benign keratosis">Pigmented Benign Keratosis</option>
+          <option value="seborrheic keratosis">Seborrheic Keratosis</option>
+          <option value="squamous cell carcinoma">Squamous Cell Carcinoma</option>
+          <option value="vascular lesion">Vascular Lesion</option>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-success">Submit</button>
+    </form>
+  </div>
 </body>
 
 </html>
