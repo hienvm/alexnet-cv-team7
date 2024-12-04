@@ -15,6 +15,19 @@ app = Flask("Medical Diagnosis")
 
 # classes = ["classA", "classB", "healthy"]
 
+# classes = [
+#     "Dày sừng ánh sáng",
+#     "Ung thư biểu mô tế bào đáy",
+#     "U sợi bì",
+#     "Khỏe mạnh",
+#     "Ung thư hắc tố",
+#     "Nốt ruồi",
+#     "Dày sừng tiết bã",
+#     "Dày sừng sắc tố lành tính",
+#     "Ung thư biểu mô tế bào vảy da",
+#     "Tổn thương mạch máu",
+# ]
+
 classes = [
     "actinic keratosis",
     "basal cell carcinoma",
@@ -100,7 +113,7 @@ def diagnose():
 
 @app.route("/add_samples", methods=["GET"])
 def contribute():
-    return render_template("contribute.html")
+    return render_template("contribute.html", classes=classes)
 
 
 # lưu các file ảnh ở 2 trường vào folder có đường dẫn /collected_samples/{tên_class}/{id}
@@ -108,7 +121,7 @@ def contribute():
 def add_samples():
     # Lấy dữ liệu từ form
     symptom_images = request.files.getlist("symptom_images[]")  # Ảnh triệu chứng
-    proof_images = request.files.getlist("proof_images[]")  # Ảnh minh chứng
+    proof = request.files.getlist("proof[]")  # minh chứng
     diagnosis_class = request.form.get("class")  # Tên class (disease)
 
     # Tạo ID duy nhất cho mẫu này
@@ -117,10 +130,10 @@ def add_samples():
     # Tạo các thư mục lưu trữ
     base_path = os.path.join("collected_samples", diagnosis_class, unique_id)
     symptoms_path = os.path.join(base_path, "symptoms")  # Thư mục ảnh triệu chứng
-    proofs_path = os.path.join(base_path, "proof")  # Thư mục ảnh minh chứng
+    proof_path = os.path.join(base_path, "proof")  # Thư mục minh chứng
 
     os.makedirs(symptoms_path, exist_ok=True)  # Tạo thư mục nếu chưa tồn tại
-    os.makedirs(proofs_path, exist_ok=True)
+    os.makedirs(proof_path, exist_ok=True)
 
     # Lưu ảnh triệu chứng vào thư mục "symptoms"
     for file in symptom_images:
@@ -128,18 +141,22 @@ def add_samples():
         file.save(file_path)
 
     # Lưu ảnh minh chứng vào thư mục "proof"
-    for file in proof_images:
-        file_path = os.path.join(proofs_path, secure_filename(file.filename))
+    for file in proof:
+        file_path = os.path.join(proof_path, secure_filename(file.filename))
         file.save(file_path)
 
     # Phản hồi JSON xác nhận lưu trữ thành công
-    return jsonify(
-        {
-            "message": "Data added successfully",
-            "class": diagnosis_class,
-            "id": unique_id,
-        }
-    )
+    return render_template(
+        "contribute.html", 
+        msg=f'Uploaded sample for {diagnosis_class} successfully!',
+        classes=classes)
+    # return jsonify(
+    #     {
+    #         "message": "Data added successfully",
+    #         "class": diagnosis_class,
+    #         "id": unique_id,
+    #     }
+    # )
 
 
 if __name__ == "__main__":

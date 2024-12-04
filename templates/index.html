@@ -27,31 +27,28 @@
   </nav>
 
   <div class="container">
-    <form class="p-3 text-center" action='/' , method="post" enctype="multipart/form-data">
-      <label for="img_upload">
-        <h3>Upload images of the symtoms from different angles:</h3>
-      </label>
-
+    <form class="p-3 text-center m-auto mb-5" action='/' , method="post" enctype="multipart/form-data">
+      <h3 class="mb-3">Upload images of symptoms from different angles</h3>
       <div class="row justify-content-center">
-        <div class="col-md-3">
+        <!-- <div class="col-md-3">
           <div class="input-group mb-3">
             <div class="input-group-prepend">
               <label class="input-group-text" for="inputGroupSelect01">Options</label>
-            </div>
-            <select class="form-select" id="inputGroupSelect01" name="model">
+            </div> -->
+            <!-- <select class="form-select" id="inputGroupSelect01" name="model">
               <option selected>Choose...</option>
               <option value="0">Skin Cancer</option>
               <option value="1">Mouth</option>
-            </select>
-          </div>
-        </div>
+            </select> -->
+          <!-- </div> -->
+        <!-- </div> -->
 
         <div class="col-md-3">
-          <input class="form-control" type="file" name="images[]" id="img_upload" multiple>
+          <input class="form-control" type="file" name="images[]" id="img_upload" multiple required>
         </div>
 
       </div>
-      <input class="btn btn-primary mt-3" type="submit" value="Predict Image">
+      <input class="btn btn-primary mt-3" type="submit" value="Diagnose">
     </form>
   </div>
 
@@ -64,7 +61,7 @@
 
           {% for image in result['image_path'] %}
           <div class="col-6">
-            <img src={{image}} class="img-fluid text-center border" width=100% alt="Responsive image">
+            <img src='{{image}}' class="img-fluid text-center border" width=100% alt="Responsive image">
           </div>
           {% endfor %}
 
