@@ -1,10 +1,11 @@
 # Custom
 collected_samples/
-static/images
 datasets/
 test.*
 *.pt
 tmp/*
+*.jpg
+*.png
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
