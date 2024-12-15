@@ -11,6 +11,7 @@
 * Cách 2: Dùng conda
 1. Cài miniconda hoặc anaconda https://docs.anaconda.com/miniconda/
 2. conda env create -f environment.yml
+3. conda activate alexnet-web
 
 # Cách chạy web app:
 * Truy cập https://www.kaggle.com/code/hienvm/alexnet-pretrained-skin-diagnosis/output?scriptVersionId=211186752
