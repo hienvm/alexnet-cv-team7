@@ -13,5 +13,11 @@
 2. conda env create -f environment.yml
 
 # Cách chạy web app:
+* Truy cập https://www.kaggle.com/code/hienvm/alexnet-pretrained-skin-diagnosis/output?scriptVersionId=211186752
+* Tải các file output (không cần train augment)
+* Ném các file này vào thư mục models
 * Chạy app.py
 * Vào trang http://127.0.0.1:5000
+
+# Kết quả thí nghiệm
+* Folder notebooks
