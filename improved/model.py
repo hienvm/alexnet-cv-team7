@@ -8,7 +8,7 @@ def init_params(layer: nn.Module):
         return
     # set biases to 0
     torch.nn.init.zeros_(layer.bias)
-    # kaimming initialization, scale to variance of 2/n
+    # kaimming initialization
     # initial slope of 0.25 for prelu
     torch.nn.init.kaiming_normal_(layer.weight, 0.25)
     
