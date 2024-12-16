@@ -22,3 +22,4 @@
 
 # Kết quả thí nghiệm
 * Folder notebooks
+* print_first_layer_kernels.py (visualize kernel của layer đầu tiên)
